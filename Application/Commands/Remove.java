@@ -2,6 +2,7 @@
 package com.company.Application.Commands;
 
 import com.company.Application.Data;
+import com.company.Application.Exceptions.NoConnectionException;
 
 import java.io.IOException;
 
@@ -14,20 +15,22 @@ class Remove extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) throws IOException {
+    public void execute(String[] args) throws IOException, ClassNotFoundException, NoConnectionException {
         Data data = new Data(args);
         controllersProvider.getClientController().sendData(data);
+        controllersProvider.getClientController().receiveData();
     }
 
     @Override
     public boolean argsIsCorrect(String[] args) {
-        if (args.length >= 2)
-            return args[1].matches("\\d+");
-        return false;
+        try{
+            Integer.parseInt(args[1]);
+            return true;
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("remove_key k : удаляет элемент с ключем k");
-    }
+
 }

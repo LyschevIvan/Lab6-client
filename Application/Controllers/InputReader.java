@@ -3,14 +3,15 @@ package com.company.Application.Controllers;
 
 
 import com.company.Application.Commands.CommandInvoker;
-import com.company.Application.Exceptions.InfiniteCoordinate;
+import com.company.Application.Exceptions.InfiniteCoordinateException;
+import com.company.Application.Exceptions.NoConnectionException;
 import com.company.Application.Exceptions.WrongArgumentException;
 import com.company.Application.ProductClasses.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
+import java.net.PortUnreachableException;
 import java.util.Scanner;
 
 
@@ -51,20 +52,32 @@ public class InputReader {
      * @param commandInvoker commandInvoker
      */
     public void readCommand(CommandInvoker commandInvoker){
+
         if (reader.hasNextLine()) {
+
             String line = reader.nextLine();
             if (isScript) {
                 System.out.println(line);
             }
             String[] args = line.split(" ");
             String command = args[0].toLowerCase();
-            if(commandInvoker.commandExists(command)){
+            if (command.equals("exit")){
+                exit();
+            }
+            else if(commandInvoker.commandExists(command)){
                 if(commandInvoker.isArgsCorrect(args)){
                     try {
                         commandInvoker.executeCommand(args);
+                    } catch (PortUnreachableException e){
+                        System.out.println("Port unreachable!");
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        System.out.println("Troubles with connection");
+                    } catch (ClassNotFoundException e) {
+                        System.out.println("Corrupted Data!");
+                    } catch (NoConnectionException e) {
+                        System.out.println("Connection Lost!");
                     }
+
                 }
                 else
                     System.out.println("аргументы команды указаны неверно (введите help для списка команд)");
@@ -106,13 +119,6 @@ public class InputReader {
      */
     public Product readProduct(){ // обработка ввода данных о продукте
         Product product = new Product();
-
-        long id = Math.round(Math.random()*1000);
-
-//        while(idList.contains(id))
-//            id = Math.round(Math.random()*1000);
-        product.setId(id);
-
 
         System.out.print("Введите название продукта: ");
         boolean is_correct = false;
@@ -160,7 +166,7 @@ public class InputReader {
             }
             catch (WrongArgumentException e){
                 System.out.print(e.getMessage());
-            } catch (InfiniteCoordinate e) {
+            } catch (InfiniteCoordinateException e) {
                 System.out.print(e.getMessage());
             }
         }
@@ -170,7 +176,7 @@ public class InputReader {
 
         product.setCoordinates(coordinates);
 
-        product.setCreationDate(new Date());
+
 
         System.out.print("Введите цену(значение больше нуля): ");
         is_correct = false;
@@ -361,7 +367,7 @@ public class InputReader {
 
      * @throws NullPointerException if product with this id doesn't exist
      */
-    public void updateProduct(Product product) throws NullPointerException{
+    public Product updateProduct(Product product) throws NullPointerException{
         if (product == null){
             throw new NullPointerException("product is null");
         }
@@ -440,7 +446,7 @@ public class InputReader {
                     System.out.print("Введите правильное значение y (число с плавающей точкой): ");
                 } catch (WrongArgumentException e) {
                     System.out.print(e.getMessage());
-                } catch (InfiniteCoordinate e) {
+                } catch (InfiniteCoordinateException e) {
                     System.out.print(e.getMessage());
                 }
 
@@ -664,7 +670,7 @@ public class InputReader {
                 System.out.print("Введите цвет волос владельца правильно(black,blue,green,orange,red): ");
             }
         }
-
+        return product;
 
 
     }

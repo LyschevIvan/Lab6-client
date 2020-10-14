@@ -3,6 +3,7 @@ package com.company.Application.Commands;
 
 
 import com.company.Application.Controllers.InputReader;
+import com.company.Application.Exceptions.NoConnectionException;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -28,8 +29,6 @@ public class CommandInvoker {
         commands.put("info", new Info(controllersProvider));
         commands.put("insert", new Insert(controllersProvider));
         commands.put("execute_script", new ExecuteScript(controllersProvider));
-        commands.put("exit", new Exit(controllersProvider));
-        commands.put("save", new Save(controllersProvider));
         commands.put("show", new Show(controllersProvider));
         commands.put("remove_key", new Remove(controllersProvider));
         commands.put("clear", new Clear(controllersProvider));
@@ -59,9 +58,10 @@ public class CommandInvoker {
      * execute command by it's name
      * @param commandLine String[]
      */
-    public void executeCommand(String[] commandLine) throws IOException {
+    public void executeCommand(String[] commandLine) throws IOException, ClassNotFoundException, NoConnectionException {
         String commandName = commandLine[0].toLowerCase();
         commands.get(commandName).execute(commandLine);
+
         if(enteredCommandsCounter == 13)
             enteredCommands.remove();
         else
@@ -100,9 +100,7 @@ public class CommandInvoker {
     /**
      * uses to call function getInfo in each command
      */
-    void commandsInfo(){
-        commands.forEach((k,v)->v.getInfo());
-    }
+
 
 
 

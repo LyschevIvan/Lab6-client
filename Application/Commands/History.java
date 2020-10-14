@@ -2,6 +2,7 @@
 package com.company.Application.Commands;
 
 import com.company.Application.Data;
+import com.company.Application.Exceptions.NoConnectionException;
 
 import java.io.IOException;
 
@@ -16,7 +17,7 @@ class History extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) throws IOException {
+    public void execute(String[] args) throws IOException, NoConnectionException {
         Data data = new Data(args);
         controllersProvider.getClientController().sendData(data);
     }
@@ -26,8 +27,5 @@ class History extends AbstractCommand {
         return true;
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("history : выводит последние 13 введенных команд");
-    }
+
 }

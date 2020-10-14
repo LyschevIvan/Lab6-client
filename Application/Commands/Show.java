@@ -2,6 +2,7 @@
 package com.company.Application.Commands;
 
 import com.company.Application.Data;
+import com.company.Application.Exceptions.NoConnectionException;
 
 import java.io.IOException;
 
@@ -14,10 +15,14 @@ class Show extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) throws IOException {
-//        controllersProvider.getTreeMapController().forEach((k,v)->System.out.println(k +" " + v.toString()));
+    public void execute(String[] args) throws IOException, ClassNotFoundException, NoConnectionException {
         Data data = new Data(args);
-        controllersProvider.getClientController().sendData(data);
+
+            controllersProvider.getClientController().sendData(data);
+            controllersProvider.getClientController().receiveData();
+
+
+
 
     }
 
@@ -26,8 +31,5 @@ class Show extends AbstractCommand {
         return true;
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("show : выводит элементы коллекции");
-    }
+
 }

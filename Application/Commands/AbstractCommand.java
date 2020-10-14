@@ -1,7 +1,10 @@
 
 package com.company.Application.Commands;
 
+import com.company.Application.Exceptions.NoConnectionException;
+
 import java.io.IOException;
+
 
 /**
  * designate all Commands interface
@@ -18,7 +21,7 @@ abstract public class AbstractCommand {
      * executes command
      * @param args String[]
      */
-    abstract void execute(String[] args) throws IOException;
+    abstract void execute(String[] args) throws IOException, ClassNotFoundException, NoConnectionException;
 
     /**
      * checks if arguments are correct for
@@ -27,8 +30,5 @@ abstract public class AbstractCommand {
      */
     abstract boolean argsIsCorrect(String[] args);
 
-    /**
-     * print info about command
-     */
-    abstract void getInfo();
+
 }

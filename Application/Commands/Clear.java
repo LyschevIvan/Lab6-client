@@ -2,6 +2,7 @@
 package com.company.Application.Commands;
 
 import com.company.Application.Data;
+import com.company.Application.Exceptions.NoConnectionException;
 
 import java.io.IOException;
 
@@ -14,9 +15,13 @@ class Clear extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) throws IOException {
+    public void execute(String[] args) throws IOException, ClassNotFoundException, NoConnectionException {
         Data data = new Data(args);
-        controllersProvider.getClientController().sendData(data);
+
+            controllersProvider.getClientController().sendData(data);
+            controllersProvider.getClientController().receiveData();
+
+
     }
 
     @Override
@@ -24,8 +29,5 @@ class Clear extends AbstractCommand {
         return true;
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("clear : очищает коллекцию");
-    }
+
 }

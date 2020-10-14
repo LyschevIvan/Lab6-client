@@ -2,8 +2,11 @@
 package com.company.Application.Commands;
 
 import com.company.Application.Data;
+import com.company.Application.Exceptions.NoConnectionException;
+import com.company.Application.ProductClasses.Product;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * uses to change value by key in collection
@@ -14,28 +17,35 @@ class Update extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) throws IOException {
+    public void execute(String[] args) throws IOException, ClassNotFoundException, NoConnectionException {
+        int key = Integer.parseInt(args[1]);
         Data data = new Data(args);
         controllersProvider.getClientController().sendData(data);
-//        int key = Integer.parseInt(args[1]);
-//        try {
-//            controllersProvider.getInputReader().updateProduct(controllersProvider.getTreeMapController().getByID(key));
-//        } catch (NullPointerException e) {
-//            System.out.println("Не удалось найти элемент с данным Id. Попробуйте еще раз");
-//        }
+        Data updating = controllersProvider.getClientController().receiveAndGetData();
+        if (updating.getProduct()!= null) {
+            Product updated = controllersProvider.getInputReader().updateProduct(updating.getProduct());
+            Data response = new Data(args,key, updated);
+            controllersProvider.getClientController().sendData(response);
+            controllersProvider.getClientController().receiveData();
+        }
+        else {
+            Arrays.stream(updating.getMessage()).forEach(System.out::println);
+        }
+
+
 
     }
 
     @Override
     public boolean argsIsCorrect(String[] args) {
-        if(args.length >= 2)
-            return args[1].matches("\\d+");
-
-        return false;
+        try{
+            Integer.parseInt(args[1]);
+            return true;
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("update key : предлагает изменить данные о продукте с ключем key");
-    }
+
 }

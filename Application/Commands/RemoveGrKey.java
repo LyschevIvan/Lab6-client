@@ -2,9 +2,9 @@
 package com.company.Application.Commands;
 
 import com.company.Application.Data;
+import com.company.Application.Exceptions.NoConnectionException;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * remove if key is greater
@@ -15,16 +15,11 @@ class RemoveGrKey extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) throws IOException {
+    public void execute(String[] args) throws IOException, ClassNotFoundException, NoConnectionException {
         Data data = new Data(args);
         controllersProvider.getClientController().sendData(data);
-//        Integer key = Integer.valueOf(args[1]);
-//        Iterator<Integer> keyIterator = controllersProvider.getTreeMapController().getKeyIterator();
-//        while (keyIterator.hasNext()){
-//            Integer k = keyIterator.next();
-//            if(k>key)
-//                keyIterator.remove();
-//        }
+        controllersProvider.getClientController().receiveData();
+
     }
 
     @Override
@@ -35,8 +30,5 @@ class RemoveGrKey extends AbstractCommand {
         return false;
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("remove_greater_key key : удалить из коллекции все элементы, ключ которых превышает заданный");
-    }
+
 }

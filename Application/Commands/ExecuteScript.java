@@ -25,14 +25,14 @@ class ExecuteScript extends AbstractCommand {
 
     @Override
     public boolean argsIsCorrect(String[] args) {
-        if(args.length >= 2)
-            return args[1].matches("(.)+\\.((txt)|(java))$");
+        if(args.length >= 2){
+            File file = new File(args[1]);
+            return file.exists();
+        }
+
         return false;
     }
 
-    @Override
-    public void getInfo() {
-        System.out.println("execute_script filename.txt : для выполнения программы из файла");
 
-    }
+
 }
